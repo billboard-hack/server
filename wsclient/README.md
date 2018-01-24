@@ -54,3 +54,20 @@ localhost:8080にwebsocket接続を開始。
 ```
 
 jsonの`name`にuserを指定
+
+## 使い方手順(windows 64bit)
+
+1. コマンドプロンプトかPowerShellを起動
+1. herokuのwebsocketサーバーへアクセス
+```
+./wsClient_x64.exe -addr billboard-wsserver.herokuapp.com
+```
+3. 接続開始。以下が表示される。（`<your user name>`はデフォルトでPCのログインユーザー名）
+```
+connecting to ws://billboard-wsserver.herokuapp.com/ws?name=<your user name>
+```
+4. 下記のように表示されたら接続成功
+```
+recv from <your user name>: join!!
+```
+5. 適当に文字を打ってEnterすると打った文字が接続されている全クライアントに送信される。
