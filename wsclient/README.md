@@ -1,9 +1,10 @@
-# WebsocketClient
+# WebsocketClient
 
 websocketクライアントです。
 
 ## 実行ファイル一覧
 `bin`ディレクトリにあります。
+
  ファイル名 | 対象OS | 備考
 ---------|----------|---------
  wsClient_x86.exe | windows 32bit | なし
@@ -11,7 +12,7 @@ websocketクライアントです。
  wsClient_OSX | OSX | なし
 
 ## jsonのスキーマ
-このwebsocketクライントはjsonでやり取りを行う。
+このwebsocketクライントはjsonでやり取りを行う。
 
 jsonのスキーマを以下の通り
 ```
@@ -44,7 +45,7 @@ localhost:8080にwebsocket接続を開始。
 ./wsServer_x64.exe -addr　billboard-wsserver.herokuapp.com
 ```
 
-`ws://billboard-wsserver.herokuapp.com/ws` にwebsocket接続を開始
+`ws://billboard-wsserver.herokuapp.com/ws` にwebsocket接続を開始
 
 ### name: クライアント名を指定
 
@@ -52,4 +53,4 @@ localhost:8080にwebsocket接続を開始。
 ./wsServer_x64.exe -name user
 ```
 
-jsonの`name`にuserを指定
+jsonの`name`にuserを指定

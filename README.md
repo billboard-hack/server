@@ -1,10 +1,10 @@
-# WebsocketServer
+# WebsocketServer
 
 websocketサーバーです。
 
 heroku [https://billboard-wsserver.herokuapp.com/](https://billboard-wsserver.herokuapp.com/)
 
-websocket接続用URLは billboard-wsserver.herokuapp.com/ws
+websocket接続用URLは billboard-wsserver.herokuapp.com/ws
 
 ## ローカル版実行ファイル一覧
 `bin`ディレクトリにあります。
@@ -16,7 +16,7 @@ heroku [https://billboard-wsserver.herokuapp.com/](https://billboard-wsserver.he
  wsServer_OSX | OSX | なし
 
 ## jsonのスキーマ
-このwebsocketサーバーはjsonでやり取りを行う。
+このwebsocketサーバーはjsonでやり取りを行う。
 
 jsonのスキーマを以下の通り
 ```
@@ -34,7 +34,7 @@ jsonのスキーマを以下の通り
 
 `go run main.go` (golangがインストール済みなら)
 
-localhost:8080でwebsocketを待ち受けます。
+localhost:8080でwebsocketを待ち受けます。
 
 ## オプション
 
