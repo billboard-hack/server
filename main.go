@@ -6,7 +6,7 @@ package main
 import (
 	"log"
 
-	"billboard-server/server"
+	"billboard-wsserver/server"
 )
 
 func main() {

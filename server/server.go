@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"os"
 
-	"billboard-server/trace"
+	"billboard-wsserver/trace"
 )
 
 // getPortFromEnv gets port number form environment variable.

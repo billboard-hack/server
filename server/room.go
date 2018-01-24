@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"billboard-server/trace"
+	"billboard-wsserver/trace"
 
 	"github.com/gorilla/websocket"
 )
