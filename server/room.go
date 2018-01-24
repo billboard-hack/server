@@ -74,6 +74,7 @@ var upgrader = &websocket.Upgrader{
 }
 
 func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	r.tracer.Trace(req.URL.RawQuery)
 	socket, err := upgrader.Upgrade(w, req, nil)
 	if err != nil {
 		log.Fatal("ServeHTTP:", err)

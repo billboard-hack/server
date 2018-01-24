@@ -1,26 +1,39 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"log"
 	"net/url"
 	"os"
 	"os/signal"
+	"os/user"
 	"time"
 
 	"github.com/gorilla/websocket"
 )
 
-var addr = flag.String("addr", "localhost:8080", "http service address")
+// message represents a single message
+type message struct {
+	Name    string `json:"name,omitempty"`
+	Message string `json:"message,omitempty"`
+}
 
 func main() {
+	addr := flag.String("addr", "localhost:8080", "http service address")
+	user, err := user.Current()
+	if err != nil {
+		return
+	}
+	name := flag.String("name", user.Username, "user name")
+
 	flag.Parse()
 	log.SetFlags(0)
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
 
-	u := url.URL{Scheme: "ws", Host: *addr, Path: "/echo"}
+	u := url.URL{Scheme: "ws", Host: *addr, Path: "/ws", RawQuery: "name=" + *name}
 	log.Printf("connecting to %s", u.String())
 
 	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
@@ -35,35 +48,35 @@ func main() {
 		defer c.Close()
 		defer close(done)
 		for {
-			_, message, err := c.ReadMessage()
+			var m message
+			err := c.ReadJSON(&m)
 			if err != nil {
 				log.Println("read:", err)
 				return
 			}
-			log.Printf("recv: %s", message)
+			log.Printf("recv from %s: %s", m.Name, m.Message)
 		}
 	}()
 
-	ticker := time.NewTicker(time.Second)
-	defer ticker.Stop()
+	forward := make(chan string)
+	go func() {
+		forward <- "join!!"
+		sc := bufio.NewScanner(os.Stdin)
+		for sc.Scan() {
+			forward <- sc.Text()
+		}
+	}()
 
 	for {
 		select {
-		case t := <-ticker.C:
-			err := c.WriteMessage(websocket.TextMessage, []byte(t.String()))
+		case t := <-forward:
+			err := c.WriteJSON(&message{Name: *name, Message: t})
 			if err != nil {
 				log.Println("write:", err)
 				return
 			}
 		case <-interrupt:
 			log.Println("interrupt")
-			// To cleanly close a connection, a client should send a close
-			// frame and wait for the server to close the connection.
-			err := c.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
-			if err != nil {
-				log.Println("write close:", err)
-				return
-			}
 			select {
 			case <-done:
 			case <-time.After(time.Second):

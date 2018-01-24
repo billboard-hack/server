@@ -1,1 +1,1 @@
-web: billboard-server
+web: billboard-wsserver
