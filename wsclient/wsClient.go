@@ -2,22 +2,21 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"flag"
 	"log"
 	"net/url"
 	"os"
 	"os/signal"
 	"os/user"
+	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
 )
 
 // message represents a single message
-type message struct {
-	Name    string `json:"name,omitempty"`
-	Message string `json:"message,omitempty"`
-}
+type message map[string]interface{}
 
 func main() {
 	addr := flag.String("addr", "localhost:8080", "http service address")
@@ -54,23 +53,38 @@ func main() {
 				log.Println("read:", err)
 				return
 			}
-			log.Printf("recv from %s: %s", m.Name, m.Message)
+			if name, ok := m["Name"]; ok {
+				log.Printf("recv from %s: %v", name, m["Message"])
+			} else {
+				log.Printf("recv: %v\n", m)
+			}
 		}
 	}()
 
-	forward := make(chan string)
+	forward := make(chan map[string]interface{})
 	go func() {
-		forward <- "join!!"
+		forward <- map[string]interface{}{"Name": *name, "Message": "join!!"}
 		sc := bufio.NewScanner(os.Stdin)
 		for sc.Scan() {
-			forward <- sc.Text()
+			v := make(map[string]interface{})
+			t := sc.Text()
+			if strings.HasPrefix(t, "{") && strings.HasSuffix(t, "}") {
+				err := json.Unmarshal([]byte(t), &v)
+				if err != nil {
+					v = map[string]interface{}{"error": err.Error()}
+				}
+			} else {
+				v["Name"] = *name
+				v["Message"] = t
+			}
+			forward <- v
 		}
 	}()
 
 	for {
 		select {
-		case t := <-forward:
-			err := c.WriteJSON(&message{Name: *name, Message: t})
+		case v := <-forward:
+			err := c.WriteJSON(v)
 			if err != nil {
 				log.Println("write:", err)
 				return
