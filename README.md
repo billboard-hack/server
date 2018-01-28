@@ -18,13 +18,7 @@ websocket接続用URLは billboard-wsserver.herokuapp.com/ws
 ## jsonのスキーマ
 このwebsocketサーバーはjsonでやり取りを行う。
 
-jsonのスキーマを以下の通り
-```
-{
-    "Name": "string",
-    "Message": "string"
-}
-```
+jsonのスキーマはなんでもOK
 
 ## 実行方法
 

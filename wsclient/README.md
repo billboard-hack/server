@@ -71,3 +71,14 @@ connecting to ws://billboard-wsserver.herokuapp.com/ws?name=<your user name>
 recv from <your user name>: join!!
 ```
 5. 適当に文字を打ってEnterすると打った文字が接続されている全クライアントに送信される。
+```
+connecting to ws://localhost:8080/ws?name=y0k0ta19
+recv from y0k0ta19: map[Name:y0k0ta19 message:join!!]
+test
+recv from y0k0ta19: map[Name:y0k0ta19 message:test]
+```
+6. jsonをそのまま記述するとそのjsonがそのまま送られる。
+```
+{"test":"hoge","img":"fuga"}   
+recv: map[img:fuga test:hoge]
+```
