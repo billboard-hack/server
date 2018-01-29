@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -8,6 +9,8 @@ import (
 
 	"github.com/gorilla/websocket"
 )
+
+var store map[*message]bool
 
 type room struct {
 
@@ -54,9 +57,25 @@ func (r *room) run() {
 			r.tracer.Trace("Client left")
 		case msg := <-r.forward:
 			r.tracer.Trace("Message received: ", msg)
+			if v, ok := (*msg)["stock"]; ok {
+				fmt.Println("stock ok")
+				if stock, ok := v.(bool); stock && ok {
+					fmt.Println("stock true ok")
+					store[msg] = true
+				}
+			}
 			// forward message to all clients
 			for client := range r.clients {
 				client.send <- msg
+				if v, ok := (*msg)["communication"]; ok {
+					fmt.Println("communication ok")
+					if s, ok := v.(string); ok && s == "broadcast" {
+						fmt.Println("broadcast ok")
+						for msg := range store {
+							client.send <- msg
+						}
+					}
+				}
 				r.tracer.Trace(" -- sent to client")
 			}
 		}

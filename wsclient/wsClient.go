@@ -53,29 +53,29 @@ func main() {
 				log.Println("read:", err)
 				return
 			}
-			if name, ok := m["Name"]; ok {
-				log.Printf("recv from %s: %v", name, m["Message"])
+			if name, ok := m["name"]; ok {
+				log.Printf("recv from %s: %v", name, m["message"])
 			} else {
 				log.Printf("recv: %v\n", m)
 			}
 		}
 	}()
 
-	forward := make(chan map[string]interface{})
+	forward := make(chan message)
 	go func() {
-		forward <- map[string]interface{}{"Name": *name, "Message": "join!!"}
+		forward <- message{"name": *name, "message": "join!!"}
 		sc := bufio.NewScanner(os.Stdin)
 		for sc.Scan() {
-			v := make(map[string]interface{})
+			v := make(message)
 			t := sc.Text()
 			if strings.HasPrefix(t, "{") && strings.HasSuffix(t, "}") {
 				err := json.Unmarshal([]byte(t), &v)
 				if err != nil {
-					v = map[string]interface{}{"error": err.Error()}
+					v = message{"error": err.Error()}
 				}
 			} else {
-				v["Name"] = *name
-				v["Message"] = t
+				v["name"] = *name
+				v["message"] = t
 			}
 			forward <- v
 		}

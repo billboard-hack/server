@@ -30,6 +30,7 @@ func getPortFromEnv(defaultPort string) string {
 
 // Start begins this system
 func Start() error {
+	store = make(map[*message]bool)
 	port := flag.String("port", getPortFromEnv("8080"), "The host of the application.")
 
 	flag.Parse() // parse the flags
